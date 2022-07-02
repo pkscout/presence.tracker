@@ -1,5 +1,6 @@
 v 1.0.1
 - fix for bluetooth not being available right at startup
+- changed construction of topic path for MQTT message
 
 v 1.0.0
 - initial code upload

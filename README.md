@@ -47,10 +47,10 @@ The password needed if authentication is required for your MQTT broker.
 The client ID provided to the MQTT broker.
 
 * `mqtt_path = <str>` (default `PresenceTracker`)  
-The root topic send to your MQTT broker.
+The root topic sent to your MQTT broker.
 
 * `tracker_location = <str>` (default `Main`)  
-The location of your tracker.  This is used as a subtopic so that you can have multiple trackers running on one location if needed.
+The location of your tracker.  This is used as a subtopic so that you can have multiple trackers running on one home if needed.
 
 * `which_tracker = <str>` (default `bluetooth`)  
 The tracker type that should be used.  Currently bluetooth is the only supported tracker, but it is possible to add other tracker types.
@@ -62,7 +62,7 @@ The state that the tracker sends if the device is found.
 The state that the tracker sends if the device not is found.
 
 * `occupied_device = <str>` (default `occupied_by`)  
-The tracker sends back an additional message that indicates whether any of the devices were found.  This makes it easier for other systems to determine if anyone is home.  This item is the name of that device.
+The tracker sends an additional message that indicates whether any of the devices were found.  This makes it easier for other systems to determine if anyone is home.  This item is the name of that device.
 
 * `occupied = <str>` (default `somebody`)  
 The state that the tracker sends for the `occupied_device` if any devices are found.
@@ -101,7 +101,7 @@ If you change anything in the `settings.py` file, you will need to restart the s
 
 
 ### USING WITH HOME ASSISTANT
-To add the sensor to Home Assistant use the [MQTT Sensor Component](https://www.home-assistant.io/components/sensor.mqtt/) a sample configuration is below (based on default settings plus the sample devices):
+To add the sensor to Home Assistant use the [MQTT Sensor Component](https://www.home-assistant.io/components/sensor.mqtt/). A sample configuration is below (based on default settings plus the sample devices):
 
 ```yaml
 mqtt:
