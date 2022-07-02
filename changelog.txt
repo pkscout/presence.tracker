@@ -1,2 +1,5 @@
+v 1.0.1
+- fix for bluetooth not being available right at startup
+
 v 1.0.0
 - initial code upload
