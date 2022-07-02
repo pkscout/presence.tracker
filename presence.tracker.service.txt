@@ -1,0 +1,12 @@
+[Unit]
+Description = Start/Stop Presence Tracker
+After = network.target
+
+[Service]
+Type = simple
+User = pi
+KillSignal = SIGINT
+ExecStart =/usr/bin/python3 /home/pi/presence.tracker/execute.py
+
+[Install]
+WantedBy = multi-user.target
