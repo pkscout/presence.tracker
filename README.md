@@ -43,10 +43,10 @@ The username needed if authentication is required for your MQTT broker.
 * `mqtt_pass = <str>` (default `mqtt_password`)  
 The password needed if authentication is required for your MQTT broker.
 
-* `mqtt_clientid = <str>` (default `PresenceTracker`)  
+* `mqtt_clientid = <str>` (default `presencetracker`)  
 The client ID provided to the MQTT broker.
 
-* `mqtt_path = <str>` (default `127.0.0.1`)  
+* `mqtt_path = <str>` (default `PresenceTracker`)  
 The root topic send to your MQTT broker.
 
 * `tracker_location = <str>` (default `Main`)  
