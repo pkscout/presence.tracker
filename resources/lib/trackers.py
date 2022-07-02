@@ -1,4 +1,5 @@
 import random
+import time
 try:
     import bluetooth
     has_bt = True
@@ -23,7 +24,21 @@ class BluetoothTracker:
         elif has_bt:
             mac = device.get('mac')
             if mac:
-                result = bluetooth.lookup_name(mac, timeout=self.TIMEOUT)
+                bt_unavailable = True
+                got_result = True
+                attempts = 0
+                result = None
+                while bt_unavailable:
+                    try:
+                        result = bluetooth.lookup_name(
+                            mac, timeout=self.TIMEOUT)
+                    except IndexError:
+                        got_result = False
+                    if not got_result and attempts < 6:
+                        time.sleep(10)
+                        attempts = attempts + 1
+                    else:
+                        bt_unavailable = False
                 if result:
                     return self.HOMESTATE
                 else:
