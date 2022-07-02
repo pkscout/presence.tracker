@@ -57,10 +57,10 @@ class CheckPresence:
             return None
 
     def _publish(self, device_name, device_state):
-        self.LW.log(['sending device of %s with status of %s' %
+        self.LW.log(['sending information on device %s with status of %s' %
                     (device_name, device_state)], 'debug')
         try:
-            publish.single(self.MQTTPATH + self.LOCATION + "/" + device_name,
+            publish.single('%s/%s/%s' % (self.MQTTPATH, self.LOCATION, device_name),
                            payload=device_state,
                            hostname=self.MQTTHOST,
                            client_id=self.MQTTCLIENT,

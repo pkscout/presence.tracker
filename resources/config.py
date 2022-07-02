@@ -14,7 +14,7 @@ defaults = {'waittime': 5,
             'mqtt_clientid': 'presencetracker',
             'mqtt_host': '127.0.0.1',
             'mqtt_port': 1883,
-            'mqtt_path': 'PresenceTracker/',
+            'mqtt_path': 'PresenceTracker',
             'logbackups': 1,
             'debug': False,
             'testmode': False}
