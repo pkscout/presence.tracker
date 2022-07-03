@@ -12,6 +12,9 @@ For the script to work properly, you need to install a few things first:
 ```
 sudo apt install bluetooth libbluetooth-dev
 pip3 install pybluez
+```
+If you are going to use an MQTT broker to deliver status updates, you also need to install:
+```
 pip3 install paho-mqtt
 ```
 
