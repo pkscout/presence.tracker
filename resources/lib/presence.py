@@ -3,9 +3,8 @@ import resources.config as config
 import os
 import time
 import traceback
-import paho.mqtt.publish as publish
-import paho.mqtt.client as mqtt
 from resources.lib.trackers import BluetoothTracker
+from resources.lib.notifiers import MqttNotifier, HaRestNotifier
 from resources.lib.xlogger import Logger
 
 
@@ -15,13 +14,7 @@ class CheckPresence:
         self.LW = lw
         self.KEEPRUNNING = True
         self.TRACKER = self._pick_tracker(config.Get('which_traker'))
-        self.MQTTAUTH = {'username': config.Get(
-            'mqtt_user'), 'password': config.Get('mqtt_pass')}
-        self.MQTTHOST = config.Get('mqtt_host')
-        self.MQTTPORT = config.Get('mqtt_port')
-        self.MQTTCLIENT = config.Get('mqtt_clientid')
-        self.MQTTPATH = config.Get('mqtt_path')
-        self.LOCATION = config.Get('tracker_location')
+        self.NOTIFIER = self._pick_notifier(config.Get('which_notifier'))
         self.HOMESTATE = config.Get('home_state')
         self.AWAYSTATE = config.Get('away_state')
         self.OCCUPIEDDEVICE = config.Get('occupied_device')
@@ -31,16 +24,19 @@ class CheckPresence:
     def Start(self):
         self.LW.log(['starting up CheckPresence'], 'info')
         try:
-            while self.KEEPRUNNING and self.TRACKER:
+            while self.KEEPRUNNING and self.TRACKER and self.NOTIFIER:
                 occupied_state = self.NOTOCCUPIED
                 for device in config.Get('devices'):
                     device_state = self.TRACKER.GetDeviceStatus(device)
-                    self._publish(device['name'], device_state)
+                    loglines = self.NOTIFIER.Send(device['name'], device_state)
+                    self.LW.log(loglines, 'debug')
                     if device_state == self.HOMESTATE:
                         occupied_state = self.OCCUPIED
-                self._publish(self.OCCUPIEDDEVICE, occupied_state)
-                time.sleep(config.Get('waittime') * 60)
+                loglines = self.NOTIFIER.Send(
+                    self.OCCUPIEDDEVICE, occupied_state)
+                self.LW.log(loglines, 'debug')
                 config.Reload()
+                time.sleep(config.Get('waittime') * 60)
         except KeyboardInterrupt:
             self.KEEPRUNNING = False
         except Exception as e:
@@ -56,25 +52,15 @@ class CheckPresence:
             self.LW.log(['invalid tracker specified'])
             return None
 
-    def _publish(self, device_name, device_state):
-        self.LW.log(['sending information on device %s with status of %s' %
-                    (device_name, device_state)], 'debug')
-        try:
-            publish.single('%s/%s/%s' % (self.MQTTPATH, self.LOCATION, device_name),
-                           payload=device_state,
-                           hostname=self.MQTTHOST,
-                           client_id=self.MQTTCLIENT,
-                           auth=self.MQTTAUTH,
-                           port=self.MQTTPORT,
-                           protocol=mqtt.MQTTv311)
-        except ConnectionRefusedError:
-            self.LW.log(["MQTT connection refused"], 'error')
-        except ConnectionAbortedError:
-            self.LW.log(["MQTT connection aborted"], 'error')
-        except ConnectionResetError:
-            self.LW.log(["MQTT connection reset"], 'error')
-        except ConnectionError:
-            self.LW.log(["MQTT connection error"], 'error')
+    def _pick_notifier(self, whichnotifier):
+        self.LW.log(['setting up %s notifier' % whichnotifier])
+        if whichnotifier.lower() == 'mqtt':
+            return MqttNotifier(config=config)
+        elif whichnotifier.lower() == 'harest':
+            return HaRestNotifier(config=config)
+        else:
+            self.LW.log(['invalid notifier specified'])
+            return None
 
 
 class Main:
