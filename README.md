@@ -92,8 +92,13 @@ For debugging you can get a more verbose log by setting this to True.
 
 
 ## USAGE:
+
+### FROM THE COMMAND LINE
+
 To run from the terminal (for testing): `python3 /home/pi/presence.tracker/execute.py`  
 To exit: CNTL-C
+
+### AS A SERVICE
 
 Running from the terminal is useful during initial testing, but once you know it's working the way you want, you should set it to autostart.  To do that you need to copy rpiwsl.service.txt to the systemd directory, change the permissions, and configure systemd. From a terminal window:
 ```
