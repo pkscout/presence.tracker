@@ -23,16 +23,28 @@ For the script to do anything, you need to create a settings file.  In the scrip
 ```
 devices = [{"name": "device1", "mac": "09:76:C5:52:2E:E6"},
            {"name": "device2", "mac": "04:35:C6:19:C7:3D"}]
-mqtt_host = '127.0.0.1'
+host = '127.0.0.1'
 ```
 
 There are a number of options available:
 
+* `which_tracker = <str>` (default `bluetooth`)  
+The tracker type that should be used.  Currently bluetooth is the only supported tracker, but it is possible to add other tracker types.
+
+* `which_notifier = <str>` (default `harest`)  
+The notifier to use.  If you leave this as the default, you must specific a Home Assistant token for use with the rest API in the `rest_token` setting.  To use an MQTT broker, change this to `mqtt`.
+
 * `devices = <list>` (default `[]`)  
 This is a list of devices for which to scan.  The device name can be whatever you like as long as you don't use spaces or reserved characters.  The mac item is the Bluetooth MAC address for the device.
 
-* `mqtt_host = <str>` (default `127.0.0.1`)  
-The IP address of your MQTT broker.
+* `host = <str>` (default `127.0.0.1`)  
+The IP address of your Home Assistant server or MQTT broker.
+
+* `rest_port = <int>` (default `8123`)  
+The port of your Home Assistant server.
+
+* `rest_token = <str>` (default `None`)  
+The API token from your Home Assistant server.  For information on generating a token, see [Home Assistant User Profiles](https://www.home-assistant.io/docs/authentication/#your-account-profile).
 
 * `mqtt_port = <int>` (default `1883`)  
 The port of your MQTT broker.
@@ -52,9 +64,6 @@ The root topic sent to your MQTT broker.
 * `tracker_location = <str>` (default `Main`)  
 The location of your tracker.  This is used as a subtopic so that you can have multiple trackers running on one home if needed.
 
-* `which_tracker = <str>` (default `bluetooth`)  
-The tracker type that should be used.  Currently bluetooth is the only supported tracker, but it is possible to add other tracker types.
-
 * `home_state = <str>` (default `home`)  
 The state that the tracker sends if the device is found.
 
@@ -69,7 +78,6 @@ The state that the tracker sends for the `occupied_device` if any devices are fo
 
 * `notoccupied = <str>` (default `nobody`)  
 The state that the tracker sends for the `occupied_device` if no devices are found.
-
 
 * `logbackups = <int>` (default `1`)  
 The number of days of logs to keep.
@@ -101,6 +109,17 @@ If you change anything in the `settings.py` file, you will need to restart the s
 
 
 ### USING WITH HOME ASSISTANT
+
+#### REST
+
+By default the presence tracker is set to send its information to Home Assistant via a [REST API call](https://developers.home-assistant.io/docs/api/rest/).  As noted in that link, if you are not using the `frontend` in your setup, you will need to add the API integration.  For this to work, you **must** also provide a Long Lived Token via the `rest_token` option in the settings file.
+
+There is no further configuration required in home assistant.  The devices and occupancy state will appear in your home assistant setup.  The sensor will have a name like `sensor.device1_main_presence` with a friendly name of `Device 1 Main Presence`.
+
+Note that after a restart of Home Assistant, these sensors will either show as unavailable or disappear all together.  They will become available and/or reappear once the presence tracker sends its next status update.
+
+#### MQTT
+
 To add the sensor to Home Assistant use the [MQTT Sensor Component](https://www.home-assistant.io/components/sensor.mqtt/). A sample configuration is below (based on default settings plus the sample devices):
 
 ```yaml
