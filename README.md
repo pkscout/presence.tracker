@@ -13,7 +13,8 @@ For the script to work properly, you need to install a few things first:
 sudo apt install bluetooth libbluetooth-dev
 pip3 install pybluez
 ```
-If you are going to use an MQTT broker to deliver status updates, you also need to install:
+
+If you are going to use an MQTT broker to communicate status, you will also need the following:
 ```
 pip3 install paho-mqtt
 ```
@@ -27,9 +28,10 @@ For the script to do anything, you need to create a settings file.  In the scrip
 devices = [{"name": "device1", "mac": "09:76:C5:52:2E:E6"},
            {"name": "device2", "mac": "04:35:C6:19:C7:3D"}]
 host = '127.0.0.1'
+rest_token = 'your HA long lived token'
 ```
 
-There are a number of options available:
+For more information about the HA long lived token, please see `rest_token` below.  If you are using an MQTT broker, you do not need to include `rest_token` in the settings.  There are a number of options available in the settings:
 
 * `which_tracker = <str>` (default `bluetooth`)  
 The tracker type that should be used.  Currently bluetooth is the only supported tracker, but it is possible to add other tracker types.
