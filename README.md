@@ -67,7 +67,7 @@ The client ID provided to the MQTT broker.
 The root topic sent to your MQTT broker.
 
 * `tracker_location = <str>` (default `Main`)  
-The location of your tracker.  With Rest, this is included in the name to uniquely identify a device/tracker combination (in case you have more than one tracker in the house).  With MQTT, this is used as a subtopic to differentiate the tracker.
+The location of your tracker.  With REST, this is included in the name of the sensor to uniquely identify a device/tracker combination (in case you have more than one tracker in the house).  With MQTT, this is used as a subtopic to differentiate the tracker.
 
 * `home_state = <str>` (default `home`)  
 The state that the tracker sends if the device is found.
