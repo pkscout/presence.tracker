@@ -27,7 +27,9 @@ class CheckPresence:
             while self.KEEPRUNNING and self.TRACKER and self.NOTIFIER:
                 occupied_state = self.NOTOCCUPIED
                 for device in config.Get('devices'):
-                    device_state = self.TRACKER.GetDeviceStatus(device)
+                    device_state, loglines = self.TRACKER.GetDeviceStatus(
+                        device)
+                    self.LW.log(loglines, 'debug')
                     loglines = self.NOTIFIER.Send(device['name'], device_state)
                     self.LW.log(loglines, 'debug')
                     if device_state == self.HOMESTATE:

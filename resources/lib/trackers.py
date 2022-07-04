@@ -15,32 +15,43 @@ class BluetoothTracker:
         self.TIMEOUT = config.Get('bt_timeout')
 
     def GetDeviceStatus(self, device):
+        loglines = []
         if self.TESTMODE:
+            loglines.append('in test mode, sending back random result')
             result = random.randint(0, 1)
             if result == 1:
-                return self.HOMESTATE
+                return self.HOMESTATE, loglines
             else:
-                return self.AWAYSTATE
+                return self.AWAYSTATE, loglines
         elif has_bt:
             mac = device.get('mac')
             if mac:
-                bt_unavailable = True
-                got_result = True
                 attempts = 0
                 result = None
-                while bt_unavailable:
+                dname = device.get('name', 'unknown')
+                loglines.append('checking for %s at %s' % (dname, mac))
+                while not result and attempts < 6:
+                    bt_unavailable = False
                     try:
                         result = bluetooth.lookup_name(
                             mac, timeout=self.TIMEOUT)
                     except IndexError:
-                        got_result = False
-                    if not got_result and attempts < 6:
-                        time.sleep(10)
+                        loglines.append(
+                            'error connecting to bluetooth, trying again in 10 seconds')
+                        result = None
+                        bt_unavailable = True
+                    if not result:
                         attempts = attempts + 1
-                    else:
-                        bt_unavailable = False
-                if result:
-                    return self.HOMESTATE
+                        time.sleep(10)
+                if bt_unavailable:
+                    loglines.append('unable to connect to bluetooth')
+                    return 'error', loglines
+                elif result:
+                    loglines.append('device found')
+                    return self.HOMESTATE, loglines
                 else:
-                    return self.AWAYSTATE
-        return 'error'
+                    loglines.append('device not found')
+                    return self.AWAYSTATE, loglines
+            else:
+                loglines.append('no MAC address in device information')
+        return 'error', loglines
