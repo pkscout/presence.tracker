@@ -148,4 +148,4 @@ mqtt:
 
 #### Multiple Trackers in One House
 
-If you're just trying to know whether anyone is home at all, you can use a [bayesian sensor](https://www.home-assistant.io/components/bayesian/) with the `occupied_by` sensor from each tracker to determine if anyone is home.  For room based detection, you would likely need trackers in every room, and where they overlap you'd need logic to make the best guess as to what room the device is actually in.  
+If you're just trying to know whether anyone is home at all, you can use a [bayesian sensor](https://www.home-assistant.io/components/bayesian/) with the `occupied_by` sensor from each tracker to determine if anyone is home.  Make sure to give each tracker it's own unique `tracker_location` in the settings, or the trackers will be updating the same sensors.  For room based detection, you would likely need trackers in every room, and where they overlap you'd need logic to make the best guess as to what room the device is actually in.  
