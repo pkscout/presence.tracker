@@ -146,4 +146,6 @@ mqtt:
       name: "House Occupied By"
 ```
 
-Using the above sensor in conjuction with other device trackers and a [bayesian sensor](https://www.home-assistant.io/components/bayesian/), can make a pretty accurate device tracker.
+#### Multiple Trackers in One House
+
+If you're just trying to know whether anyone is home at all, you can use a [bayesian sensor](https://www.home-assistant.io/components/bayesian/) with the `occupied_by` sensor from each tracker to determine if anyone is home.  For room based detection, you would likely need trackers in every room, and where they overlap you'd need logic to make the best guess as to what room the device is actually in.  
