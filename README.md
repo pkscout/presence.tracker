@@ -67,7 +67,7 @@ The client ID provided to the MQTT broker.
 The root topic sent to your MQTT broker.
 
 * `tracker_location = <str>` (default `Main`)  
-The location of your tracker.  This is used as a subtopic so that you can have multiple trackers running on one home if needed.
+The location of your tracker.  With Rest, this is included in the name to uniquely identify a device/tracker combination (in case you have more than one tracker in the house).  With MQTT, this is used as a subtopic to differentiate the tracker.
 
 * `home_state = <str>` (default `home`)  
 The state that the tracker sends if the device is found.
@@ -83,6 +83,9 @@ The state that the tracker sends for the `occupied_device` if any devices are fo
 
 * `notoccupied = <str>` (default `nobody`)  
 The state that the tracker sends for the `occupied_device` if no devices are found.
+
+* `waittime = <float>` (default `5`)  
+The number of minutes the tracker waits before checking for devices again.  You can use decimals, so if you want something under a minute, you can use an entry like `0.5`.
 
 * `logbackups = <int>` (default `1`)  
 The number of days of logs to keep.
