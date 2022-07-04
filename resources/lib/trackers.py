@@ -54,4 +54,5 @@ class BluetoothTracker:
                     return self.AWAYSTATE, loglines
             else:
                 loglines.append('no MAC address in device information')
+        loglines.append('bluetooth python module unavialable or not loaded')
         return 'error', loglines
