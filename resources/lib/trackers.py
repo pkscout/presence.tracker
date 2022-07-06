@@ -35,7 +35,7 @@ class BluetoothTracker:
                     try:
                         result = bluetooth.lookup_name(
                             mac, timeout=self.TIMEOUT)
-                    except IndexError:
+                    except (IndexError, bluetooth.BluetoothError) as e:
                         loglines.append(
                             'error connecting to bluetooth, trying again in 10 seconds')
                         result = None
