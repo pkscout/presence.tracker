@@ -3,7 +3,7 @@ import resources.config as config
 import os
 import time
 import traceback
-from resources.lib.trackers import BluetoothTracker
+from resources.lib.trackers import BluetoothTracker, BluetoothLETracker
 from resources.lib.notifiers import MqttNotifier, HaRestNotifier
 from resources.lib.xlogger import Logger
 
@@ -50,6 +50,8 @@ class CheckPresence:
         self.LW.log(['setting up %s tracker' % whichtracker])
         if whichtracker.lower() == 'bluetooth':
             return BluetoothTracker(config=config)
+        elif whichtracker.lower() == 'ble':
+            return BluetoothLETracker(config=config)
         else:
             self.LW.log(['invalid tracker specified'])
             return None
