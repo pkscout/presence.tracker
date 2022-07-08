@@ -1,3 +1,6 @@
+v.1.2.0
+- added Bleak based Bluetooth LE tracker
+
 v.1.1.2
 - added addition exception catching for Bluetooth connection errors
 

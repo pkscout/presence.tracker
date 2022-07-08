@@ -11,8 +11,18 @@ This python script is designed to run as a service on a Raspberry Pi.  This scri
 For the script to work properly, you need to install a few things first:
 ```
 sudo apt install bluetooth libbluetooth-dev
+```
+
+You will also need a bluetooth Python library.  The default tracker uses the older pybluez module.  This isn't well maintained any longer and won't work with Python 3.10 or later.
+```
 pip3 install pybluez
 ```
+
+There is a Bluetooth LE tracker available as well.  To use that you need to install the Bleak python library.  Bleak is a more modern and supported Bluetooth library, so you should use this if at all possible.
+```
+pip3 install bleak
+```
+
 
 If you are going to use an MQTT broker to communicate status, you will also need the following:
 ```
@@ -34,7 +44,7 @@ rest_token = 'your HA long lived token'
 For more information about the HA long lived token, please see `rest_token` below.  If you are using an MQTT broker, you do not need to include `rest_token` in the settings.  There are a number of options available in the settings:
 
 * `which_tracker = <str>` (default `bluetooth`)  
-The tracker type that should be used.  Currently bluetooth is the only supported tracker, but it is possible to add other tracker types.
+The tracker type that should be used.  The script also supports a Bluetooth LE tracker by using `ble` for this option.  The Bluetooth LE tracker is coded using the Bleak python module.  Bleak is a more modern and supported Bluetooth library, so you should use that if at all possible.
 
 * `which_notifier = <str>` (default `harest`)  
 The notifier to use.  If you leave this as the default, you must specific a Home Assistant token for use with the rest API in the `rest_token` setting.  To use an MQTT broker, change this to `mqtt`.
@@ -72,7 +82,7 @@ The location of your tracker.  With REST, this is included in the name of the se
 * `home_state = <str>` (default `home`)  
 The state that the tracker sends if the device is found.
 
-* `away_state = <str>` (default `not home`)  
+* `away_state = <str>` (default `not_home`)  
 The state that the tracker sends if the device not is found.
 
 * `occupied_device = <str>` (default `occupied_by`)  
@@ -87,12 +97,37 @@ The state that the tracker sends for the `occupied_device` if no devices are fou
 * `waittime = <float>` (default `5`)  
 The number of minutes the tracker waits before checking for devices again.  You can use decimals, so if you want something under a minute, you can use an entry like `0.5`.
 
+* `bt_timeout = <int>` (default `3`)  
+If you are using the standard Bluetooth tracker, this is the amount of time in seconds the bluetooth tracker will wait for a response from the Bluetooth subsystem before aborting.
+
+* `bt_expire = <int>` (default `60`)  
+If you are using the Bluetooth LE tracker, this is the amount of time in seconds tracker will cache the results list.  The list is cached because it takes several seconds to generate, so you don't want to have to regenerate it for every device you are tracking.  If you set `waittime` to less than a minute, you will need to reduce this item so that the cache is purged after each check.
+
 * `logbackups = <int>` (default `1`)  
 The number of days of logs to keep.
 
 * `debug = <boolean>` (default `False`)  
 For debugging you can get a more verbose log by setting this to True.
 
+## A WORD ABOUT BLUETOOTH PRIVACY
+
+If you are using the Bluetooth LE tracker, that uses a more modern version of the Bluetooth protocol that does something called MAC address randomization.  In order to keep random devices from tracking you via Bluetooth, devices randomize the MAC address advertised.  While this is great for privacy, it makes it hard to use the device for presence tracking.  To deal with that, you have to pair the device you want to track with the Pi running the presence tracker.  It doesn't have to stay connected (or even reconnect). It just needs to be paired.  That allows the Pi and the device you want to track to exchange some keys so that the Pi can get the actual physical MAC address of the Bluetooth on the tracked device.
+
+On the Raspberry Pi you need to run the bluetooth tool as root by using `sudo bluetoothctl`.  The "as root" part is very important.  If you don't do that, the keys won't get exchanged properly, and you'll never be able to match the static Bluetooth address in your settings with the tracked device.  Once you do that, issue the following commands:
+```
+discoverable on
+pairable on
+agent on
+
+```
+
+From the device you want to track (probably a phone), open up the Bluetooth settings and follow the normal process for pairing a device.  You should see the Raspberry Pi in the list of devices to which you can pair.  During the process, you'll need to confirm you see the same code on the phone as on the Pi.  Answer `yes` on the Pi and accept on your phone.  On the Pi you;ll see a bunch of services registering and then another question confirming that it's OK to add them.  Answer `yes` again.  The devices are now paired.  To finish, issue the following commands:
+```
+discoverable off
+exit
+```
+
+You should now be back at the main command prompt.  If everything worked correctly, the MAC address in your phones INFO or SETTING screen is the one that will get reported back to the tracker for matching.
 
 ## USAGE:
 
