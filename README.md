@@ -1,5 +1,5 @@
 # presence.tracker
-This python script is designed to run as a service on a Raspberry Pi.  This script checks to see if specified bluetooth devices are in range and send MQTT messages regarding their status.
+This python script is designed to run as a service on a Raspberry Pi.  This script checks to see if specified bluetooth devices are in range and send REST messages to Home Assistant or MQTT messages to a broker regarding their status.
 
 
 ## PREREQUISITES:
