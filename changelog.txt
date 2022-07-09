@@ -1,3 +1,6 @@
+v.1.2.2
+- fix in BLE tracker for bluetooth not being available right at startup
+
 v.1.2.1
 - fix for which tracker variable spelling in settings
 
