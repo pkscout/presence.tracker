@@ -23,7 +23,6 @@ There is a Bluetooth LE tracker available as well.  To use that you need to inst
 pip3 install bleak
 ```
 
-
 If you are going to use an MQTT broker to communicate status, you will also need the following:
 ```
 pip3 install paho-mqtt
@@ -111,7 +110,7 @@ For debugging you can get a more verbose log by setting this to True.
 
 ## A WORD ABOUT BLUETOOTH PRIVACY
 
-If you are using the Bluetooth LE tracker, that uses a more modern version of the Bluetooth protocol that does something called MAC address randomization.  In order to keep random devices from tracking you via Bluetooth, devices randomize the MAC address advertised.  While this is great for privacy, it makes it hard to use the device for presence tracking.  To deal with that, you have to pair the device you want to track with the Pi running the presence tracker.  It doesn't have to stay connected (or even reconnect). It just needs to be paired.  That allows the Pi and the device you want to track to exchange some keys so that the Pi can get the actual physical MAC address of the Bluetooth on the tracked device.
+If you are using the Bluetooth LE tracker, that uses a more modern version of the Bluetooth protocol that does something called MAC address randomization.  In order to keep unknown devices from tracking you via Bluetooth, devices randomize the MAC address advertised.  While this is great for privacy, it makes it hard to use the device for presence tracking.  To deal with that, you have to pair the device you want to track with the Pi running the presence tracker.  It doesn't have to stay connected (or even reconnect). It just needs to be paired.  That allows the Pi and the device you want to track to exchange some keys so that the Pi can get the actual physical MAC address of the Bluetooth on the tracked device.  Unfortunately, the pairing doesn't always exchange the keys properly, so you might have to unpair and try again.  In my experience, this is very hit or miss.  I had one device exchange keys the first try.  I had another than took a half a dozen tries.
 
 On the Raspberry Pi you need to run the bluetooth tool as root by using `sudo bluetoothctl`.  The "as root" part is very important.  If you don't do that, the keys won't get exchanged properly, and you'll never be able to match the static Bluetooth address in your settings with the tracked device.  Once you do that, issue the following commands:
 ```
@@ -126,7 +125,19 @@ discoverable off
 exit
 ```
 
-You should now be back at the main command prompt.  If everything worked correctly, the MAC address in your phones INFO or SETTING screen is the one that will get reported back to the tracker for matching.
+You should now be back at the main command prompt.  To test this, go to the presence.tracker folder and run the test script using `python3 test.py`.  You'll get a list back of every device found.  If the key exchange worked, you should see your device name and the actual MAC address in the list somewhere.  If you don't see your device, the keys didn't exchange.  You'll need to remove the device and then pair again.
+```
+sudo bluetoothctl
+paired-devices
+```
+
+This will get you a list of the paired devices and their MAC addresses.  With that you can remove the device.
+```
+remove <MAC ADDRESS>
+exit
+```
+
+You'all also need to forget the presence tracker device on your phone.  Go back to the beginning of this section and try pairing again.  Keep trying until the `test.py` shows you your device.
 
 ## USAGE:
 
