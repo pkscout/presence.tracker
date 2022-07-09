@@ -7,7 +7,7 @@ except ImportError:
     has_bt = False
 try:
     import asyncio
-    from bleak import BleakScanner
+    import bleak
     has_btle = True
 except:
     has_btle = False
@@ -33,23 +33,42 @@ class BluetoothLETracker:
 
     async def _get_device_list(self):
         now = time.time()
+        loglines = []
         if (now - self.TIMESTAMP) > self.EXPIRECACHE or not self.ADDRESSLIST:
             self.ADDRESSLIST = []
-            devices = await BleakScanner.discover()
-            for device in devices:
-                self.ADDRESSLIST.append(device.address)
-            self.TIMESTAMP = now
+            attempts = 0
+            devices = None
+            while not devices and attempts < 6:
+                bt_unavailable = False
+                try:
+                    devices = await bleak.BleakScanner.discover()
+                except bleak.exc.BleakDBusError:
+                    loglines.append(
+                        'error connecting to bluetooth, trying again in 10 seconds')
+                    devices = None
+                    bt_unavailable = True
+                if not devices:
+                    attempts = attempts + 1
+                    time.sleep(10)
+            if bt_unavailable:
+                loglines.append('unable to connect to bluetooth')
+            else:
+                for device in devices:
+                    self.ADDRESSLIST.append(device.address)
+        else:
+            loglines.append('using cached device list')
+        self.TIMESTAMP = now
+        return loglines
 
     def GetDeviceStatus(self, device):
-        loglines = []
         if self.TESTMODE:
             return _test_mode(self.HOMESTATE, self.AWAYSTATE)
         elif has_btle:
             mac = device.get('mac')
             if mac:
-                loglines.append('looking for %s in:' % mac)
                 loop = asyncio.get_event_loop()
-                loop.run_until_complete(self._get_device_list())
+                loglines = loop.run_until_complete(self._get_device_list())
+                loglines.append('looking for %s in:' % mac)
                 loglines.append(self.ADDRESSLIST)
                 if mac in self.ADDRESSLIST:
                     loglines.append('device found')
