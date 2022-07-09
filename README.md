@@ -6,7 +6,7 @@ This python script is designed to run as a service on a Raspberry Pi.  This scri
 1. Python3 is required.
 
 ## OTHER PLATFORMS
-If you using the BluetoothLE tracker option, this will work on OSX and probably Windows too.  On OSX you have to use the devices UUID instead of MAC address.  See the Bleak Python docs for more information on that.
+If you using the Bluetooth LE tracker option, this will work on OSX and probably Windows too.  On OSX you have to use the devices UUID instead of MAC address.  [See the Bleak Python docs](https://bleak.readthedocs.io/en/latest/api.html#class-representing-ble-devices) for more information on that.
 
 ## INSTALLATION:
 For the script to work properly, you need to install a few things first:
