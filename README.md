@@ -191,6 +191,49 @@ mqtt:
       name: "House Occupied By"
 ```
 
+#### Using with Home Assistant Presence
+
+If you want to use the built-in home assistant presence features, you have to create presence trackers for each device, assign the new presence tracker(s) to a person, and create an automation to update the presence trackers.  To manually create presence trackers you need to add them to the `known_devices.yaml` file (or create the file if it doesn't exist) in your Home Assistant config directory.  The MAC entry doesn't really matter, but I use the same MAC address as the device just to keep track of things.
+```
+device1_main:
+  name: Device 1 Main
+  mac: 09:76:C5:52:2E:E6
+  track: true
+
+device2_main:
+  name: Device 2 Main
+  mac: 04:35:C6:19:C7:3D
+  track: true
+```
+
+This will create two presence trackers named `device_tracker.device1_main` and `device_tracker.device2_main`.
+
+The automation uses the `device_tracker.see` service to update a device tracker.  As written, any update to any of the REST sensors will trigger an update of them all (the logic is easier, and there's no harm in updating something with the same status it already has).
+```
+alias: Set Presence
+description: ''
+trigger:
+  - platform: state
+    entity_id:
+      - sensor.device1_main_presence
+      - sensor.device2_main_presence
+condition: []
+action:
+  - service: device_tracker.see
+    data:
+      dev_id: device1_main
+      location_name: '{{ states(''sensor.device1_main_presence'') }}'
+  - service: device_tracker.see
+    data:
+      dev_id: device2_main
+      location_name: '{{ states(''sensor.device2_main_presence'') }}'
+mode: single
+```
+
+Once this is running and the device trackers are assigned to a person, you'll be able to use all the built-in Home Assistant presence features.  For instance, I use the `numeric state` of the `Home` entity to determine if anyone is home.
+
 #### Multiple Trackers in One House
 
-If you're just trying to know whether anyone is home at all, you can use a [bayesian sensor](https://www.home-assistant.io/components/bayesian/) with the `occupied_by` sensor from each tracker to determine if anyone is home.  Make sure to give each tracker it's own unique `tracker_location` in the settings, or the trackers will be updating the same sensors.  For room based detection, you would likely need trackers in every room, and where they overlap you'd need logic to make the best guess as to what room the device is actually in.  
+If you're just trying to know whether anyone is home at all, you can use a [bayesian sensor](https://www.home-assistant.io/components/bayesian/) with the `occupied_by` sensor from each tracker to determine if anyone is home.  Make sure to give each tracker it's own unique `tracker_location` in the settings, or the trackers will be updating the same sensors.  For room based detection, you would likely need trackers in every room, and where they overlap you'd need logic to make the best guess as to what room the device is actually in.
+
+If you are using the Home Assistant Presence features, you can just add the devices from each pi to the right person.  A person is considered home as long as at least one of their devices is home.
