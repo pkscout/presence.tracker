@@ -30,13 +30,8 @@ class CheckPresence:
                     device_state, loglines = self.TRACKER.GetDeviceStatus(
                         device)
                     self.LW.log(loglines, 'debug')
-                    loglines = self.NOTIFIER.Send(device['name'], device_state)
+                    loglines = self.NOTIFIER.Send(device, device_state)
                     self.LW.log(loglines, 'debug')
-                    if device_state == self.HOMESTATE:
-                        occupied_state = self.OCCUPIED
-                loglines = self.NOTIFIER.Send(
-                    self.OCCUPIEDDEVICE, occupied_state)
-                self.LW.log(loglines, 'debug')
                 config.Reload()
                 time.sleep(config.Get('waittime') * 60)
         except KeyboardInterrupt:
@@ -50,7 +45,7 @@ class CheckPresence:
         self.LW.log(['setting up %s tracker' % whichtracker])
         if whichtracker.lower() == 'bluetooth':
             return BluetoothTracker(config=config)
-        elif whichtracker.lower() == 'ble':
+        elif whichtracker.lower() == 'bluetooth_le':
             return BluetoothLETracker(config=config)
         else:
             self.LW.log(['invalid tracker specified'])

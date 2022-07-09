@@ -1,3 +1,10 @@
+v.1.3.0
+- changed MQTT notifier to create presence trackers using Home Assistant's MQTT Discovery
+- added "retain" flag to MQTT messages
+- added logic to create entity_ids that use only letters, numbers, and underscores
+- renamed Bluetooth LE tracker from "ble" to "bluetooth_le" to match HA sources
+- removed the "occupied by" sensor (better handled within Home Assistant)
+
 v.1.2.2
 - fix in BLE tracker for bluetooth not being available right at startup
 
