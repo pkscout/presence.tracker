@@ -118,7 +118,6 @@ On the Raspberry Pi you need to run the bluetooth tool as root by using `sudo bl
 discoverable on
 pairable on
 agent on
-
 ```
 
 From the device you want to track (probably a phone), open up the Bluetooth settings and follow the normal process for pairing a device.  You should see the Raspberry Pi in the list of devices to which you can pair.  During the process, you'll need to confirm you see the same code on the phone as on the Pi.  Answer `yes` on the Pi and accept on your phone.  On the Pi you;ll see a bunch of services registering and then another question confirming that it's OK to add them.  Answer `yes` again.  The devices are now paired.  To finish, issue the following commands:

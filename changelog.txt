@@ -1,3 +1,6 @@
+v.1.2.1
+- fix for which tracker variable spelling in settings
+
 v.1.2.0
 - added Bleak based Bluetooth LE tracker
 
