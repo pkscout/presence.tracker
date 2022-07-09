@@ -35,11 +35,21 @@ It is recommended you install this script in `/home/pi`.  The service file you'l
 ## CONFIGURATION:
 For the script to do anything, you need to create a settings file.  In the script directory if there is not yet a `data` folder, create it and then create a file called `settings.py`.  It must have the following at a minimum:
 ```
-devices = [{"name": "device1", "mac": "09:76:C5:52:2E:E6"},
-           {"name": "device2", "mac": "04:35:C6:19:C7:3D"}]
+devices = [{"name": "Device 1", "mac": "09:76:C5:52:2E:E6"},
+           {"name": "Device 2", "mac": "04:35:C6:19:C7:3D"}]
 host = '127.0.0.1'
 rest_token = 'your HA long lived token'
 ```
+
+The devices dict can have an optional `entity_id` item if you want to have a specific entity_id in Home Assistant rather than one created from the name.  With the optional item, the devices dict will look like this:
+```
+devices = [{"name": "Device 1", "entity_id":"dev1", "mac": "09:76:C5:52:2E:E6"},
+           {"name": "Device 2", "entity_id":"dev2", "mac": "04:35:C6:19:C7:3D"}]
+host = '127.0.0.1'
+rest_token = 'your HA long lived token'
+```
+
+You can also mix and match within the dict, so some entries can have an `entity_id` and others can omit it.
 
 For more information about the HA long lived token, please see `rest_token` below.  If you are using an MQTT broker, you do not need to include `rest_token` in the settings.  There are a number of options available in the settings:
 
