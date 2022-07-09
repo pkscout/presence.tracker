@@ -13,7 +13,7 @@ class CheckPresence:
     def __init__(self, lw):
         self.LW = lw
         self.KEEPRUNNING = True
-        self.TRACKER = self._pick_tracker(config.Get('which_traker'))
+        self.TRACKER = self._pick_tracker(config.Get('which_tracker'))
         self.NOTIFIER = self._pick_notifier(config.Get('which_notifier'))
         self.HOMESTATE = config.Get('home_state')
         self.AWAYSTATE = config.Get('away_state')

@@ -1,6 +1,6 @@
 import sys
 defaults = {'waittime': 5,
-            'which_traker': 'bluetooth',
+            'which_tracker': 'bluetooth',
             'which_notifier': 'harest',
             'home_state': 'home',
             'away_state': 'not_home',
