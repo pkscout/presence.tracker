@@ -45,8 +45,6 @@ The devices dict can have an optional `entity_id` item if you want to have a spe
 ```
 devices = [{"name":"Device 1", "entity_id":"dev1", "mac":"09:76:C5:52:2E:E6"},
            {"name":"Device 2", "entity_id":"dev2", "mac":"04:35:C6:19:C7:3D"}]
-host = '127.0.0.1'
-rest_token = 'your HA long lived token'
 ```
 
 You can also mix and match within the dict, so some entries can have an `entity_id` and others can omit it.
@@ -60,7 +58,7 @@ The tracker type that should be used.  The script also supports a Bluetooth LE t
 The notifier to use.  If you leave this as the default, you must specific a Home Assistant token for use with the rest API in the `rest_token` setting.  To use an MQTT broker, change this to `mqtt`.
 
 * `devices = <list>` (default `[]`)  
-This is a list of devices for which to scan.  The device name can be whatever you like as long as you don't use spaces or reserved characters.  The mac item is the Bluetooth MAC address for the device.
+This is a list of devices for which to scan.  The device name can be whatever you like.  The mac item is the Bluetooth MAC address for the device.
 
 * `host = <str>` (default `127.0.0.1`)  
 The IP address of your Home Assistant server or MQTT broker.
@@ -86,7 +84,7 @@ The client ID provided to the MQTT broker.
 * `mqtt_path = <str>` (default `homeassistant/presence_tracker`)  
 The root topic sent to your MQTT broker.  The default is configured so that you can use [MQTT Discovery](https://www.home-assistant.io/docs/mqtt/discovery/) with Home Assistant.
 
-* `mqtt_discover = <boolean` (default `True`)  
+* `mqtt_discover = <boolean>` (default `True`)  
 This tells presence tracker whether or not to send the presence_tracker config to Home Assistant.  If you set this to `False`, Home Assistant will not automatically create entities.
 
 * `tracker_location = <str>` (default `empty string`)  
@@ -179,11 +177,11 @@ By default the presence tracker is set to send its information to Home Assistant
 
 There is no further configuration required in home assistant.  The devices and occupancy state will appear in your home assistant setup.  The sensor will have a name like `sensor.device1_location` with a friendly name of `Device 1 Location`.
 
-Note that after a restart of Home Assistant, these sensors will either show as unavailable or disappear all together.  They will become available and/or reappear once the presence tracker sends its next status update.
+Note that after a restart of Home Assistant, these sensors will show as unavailable.  They will become available once the presence tracker sends its next status update.
 
 #### MQTT
 
-By default, the MQTT notifier uses [MQTT Discovery](https://www.home-assistant.io/docs/mqtt/discovery/) to create presence_tracker entities in Home Assistant.  If you turn that off, you can manually create sensors in Home Assistant use the [MQTT Sensor Component](https://www.home-assistant.io/components/sensor.mqtt/). You should also change the `mqtt_path` to something else (like `PresenceTracker/`.  A sample configuration is below (based on default settings plus the sample devices):
+By default, the MQTT notifier uses [MQTT Discovery](https://www.home-assistant.io/docs/mqtt/discovery/) to create presence_tracker entities in Home Assistant.  If you turn that off, you can manually create sensors in Home Assistant use the [MQTT Sensor Component](https://www.home-assistant.io/components/sensor.mqtt/). You should also change the `mqtt_path` to something else (like `PresenceTracker/`).  A sample configuration is below (based on default settings plus the sample devices):
 
 ```yaml
 mqtt:
