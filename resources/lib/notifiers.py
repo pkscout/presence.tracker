@@ -63,8 +63,10 @@ class MqttNotifier:
         loglines = []
         payload = {}
         friendly_name = device['name']
+        unique_id = _cleanup(device['mac'])
         if self.LOCATION:
             friendly_name = friendly_name + ' ' + self.LOCATION
+            unique_id = unique_id + '_' + self.LOCATION
         entity_id = _cleanup(device.get('entity_id'))
         if entity_id:
             if self.LOCATION:
@@ -74,6 +76,7 @@ class MqttNotifier:
             entity_id = _cleanup(friendly_name)
         mqtt_publish = '%s/%s' % (self.MQTTPATH, entity_id)
         payload['name'] = friendly_name
+        payload['unique_id'] = unique_id
         payload['state_topic'] = mqtt_publish + '/state'
         payload['payload_home'] = self.HOMESTATE
         payload['payload_not_home'] = self.AWAYSTATE
@@ -106,7 +109,7 @@ class HaRestNotifier:
 
     def Send(self, device, device_state):
         friendly_name = device['name']
-        entity_id = _cleanup(device['entity_id'])
+        entity_id = _cleanup(device.get('entity_id'))
         if not entity_id:
             entity_id = _cleanup(friendly_name)
         if self.LOCATION:
@@ -117,4 +120,4 @@ class HaRestNotifier:
         returned = self.JSONURL.Post('%s%s' %
                                      (self.RESTURL, entity_id),
                                      data=json.dumps(payload))
-        return returned(1)
+        return returned[1]
