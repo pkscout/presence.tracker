@@ -35,6 +35,7 @@ class BluetoothLETracker:
         now = time.time()
         loglines = []
         if (now - self.TIMESTAMP) > self.EXPIRECACHE or not self.ADDRESSLIST:
+            loglines.append('getting device list from Bluetooth scan')
             self.ADDRESSLIST = []
             attempts = 0
             devices = None
