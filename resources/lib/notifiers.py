@@ -32,6 +32,8 @@ class MqttNotifier:
         self.WHICHTRACKER = config.Get('which_tracker')
         self.DEVICE = {'identifiers': [_cleanup(config.Get('device_identifier'))],
                        'name': config.Get('device_name'),
+                       'manufacturer': config.Get('device_manufacturer'),
+                       'model': config.Get('device_model'),
                        'sw_version': config.Get('device_version'),
                        'configuration_url': config.Get('device_config_url')}
 

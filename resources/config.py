@@ -22,6 +22,8 @@ defaults = {'waittime': 5,
             'device_name': 'Presence Tracker',
             'device_config_url': 'https://github.com/pkscout/presence.tracker',
             'device_identifier': 'Wayia8kt8ZWe23xCDKBuw8nxP2cjuYkQoHogWYQy',
+            'device_model': 'PT1000',
+            'device_manufacturer': 'pkscout',
             'logbackups': 1,
             'debug': False,
             'testmode': False}

@@ -112,7 +112,13 @@ The name of the device.  If you run multiple presence trackers in a house, by de
 The "serial number" of the device.  If you run multiple presence trackers in a house, by default all tracker entities will show up under one device (when using the MQTT notifier).  If you want separate devices for each presence tracker, you need to change the identifier of the device.  You also need to change the name (above).
 
 * `device_version = <str>`  
-The version number of the device sent (when using MQTT notifier). This is bumped automatically anytime the script is updated. I have no idea why you would want to override this, but you can.
+The version number of the device (when using MQTT notifier). This is bumped automatically anytime the script is updated. I have no idea why you would want to override this, but you can.
+
+* `device_manufacturer = <str>` (default `pkscout`)  
+The manufacturer of the device (when using MQTT notifier). This is my github handle by default, but if you don't want to see my handle on the device, you can change this.
+
+* `device_model = <str>` (default `PT1000`)  
+The model of the device (when using MQTT notifier).
 
 * `device_config_url = <str>` (default `https://github.com/pkscout/presence.tracker`)  
 The configuration URL for the device (when using MQTT notifier). This gives you a link in the device to the README for the script in case you need to reference it.  If you don't want to link in your Home Assistant device, just set this to an empty string.
