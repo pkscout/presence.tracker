@@ -30,6 +30,10 @@ class MqttNotifier:
         self.AWAYSTATE = config.Get('away_state')
         self.CONFIGSENT = []
         self.WHICHTRACKER = config.Get('which_tracker')
+        self.DEVICE = {'identifiers': [_cleanup(config.Get('device_identifier'))],
+                       'name': config.Get('device_name'),
+                       'sw_version': config.Get('device_version'),
+                       'configuration_url': config.Get('device_config_url')}
 
     def _mqtt_send(self, mqtt_publish, payload):
         loglines = []
@@ -75,20 +79,20 @@ class MqttNotifier:
         else:
             entity_id = _cleanup(friendly_name)
         mqtt_publish = '%s/%s' % (self.MQTTPATH, entity_id)
-        payload['name'] = friendly_name
-        payload['unique_id'] = unique_id
-        payload['state_topic'] = mqtt_publish + '/state'
-        payload['payload_home'] = self.HOMESTATE
-        payload['payload_not_home'] = self.AWAYSTATE
-        payload['source_type'] = self.WHICHTRACKER
-        if self.MQTTDISCOVER:
-            if not entity_id in self.CONFIGSENT:
-                mqtt_config = mqtt_publish + '/config'
-                loglines.append('sending config for device %s to %s' %
-                                (friendly_name, self.MQTTHOST))
-                loglines.extend(self._mqtt_send(
-                    mqtt_config, json.dumps(payload)))
-                self.CONFIGSENT.append(entity_id)
+        if self.MQTTDISCOVER and not entity_id in self.CONFIGSENT:
+            mqtt_config = mqtt_publish + '/config'
+            payload['name'] = friendly_name
+            payload['unique_id'] = unique_id
+            payload['state_topic'] = mqtt_publish + '/state'
+            payload['payload_home'] = self.HOMESTATE
+            payload['payload_not_home'] = self.AWAYSTATE
+            payload['source_type'] = self.WHICHTRACKER
+            payload['device'] = self.DEVICE
+            loglines.append('sending config for device %s to %s' %
+                            (friendly_name, self.MQTTHOST))
+            c_loglines = self._mqtt_send(mqtt_config, json.dumps(payload))
+            loglines.extend(c_loglines)
+            self.CONFIGSENT.append(entity_id)
         loglines.append('sending %s as status for device %s to %s' %
                         (device_state, friendly_name, self.MQTTHOST))
         loglines.extend(self._mqtt_send(

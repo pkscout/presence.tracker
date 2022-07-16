@@ -105,6 +105,18 @@ If you are using the standard Bluetooth tracker, this is the amount of time in s
 * `bt_expire = <int>` (default `60`)  
 If you are using the Bluetooth LE tracker, this is the amount of time in seconds tracker will cache the results list.  The list is cached because it takes several seconds to generate, so you don't want to have to regenerate it for every device you are tracking.  If you set `waittime` to less than a minute, you will need to reduce this item so that the cache is purged after each check.
 
+* `device_name = <str>` (default `Presence Tracker`)  
+The name of the device.  If you run multiple presence trackers in a house, by default all tracker entities will show up under one device (when using the MQTT notifier).  If you want separate devices for each presence tracker, you need to change the name of the device.  You also need to change the identifier (below).
+
+* `device_identifier = <str>` (default `Wayia8kt8ZWe23xCDKBuw8nxP2cjuYkQoHogWYQy`)  
+The "serial number" of the device.  If you run multiple presence trackers in a house, by default all tracker entities will show up under one device (when using the MQTT notifier).  If you want separate devices for each presence tracker, you need to change the identifier of the device.  You also need to change the name (above).
+
+* `device_version = <str>`  
+The version number of the device sent (when using MQTT notifier). This is bumped automatically anytime the script is updated. I have no idea why you would want to override this, but you can.
+
+* `device_config_url = <str>` (default `https://github.com/pkscout/presence.tracker`)  
+The configuration URL for the device (when using MQTT notifier). This gives you a link in the device to the README for the script in case you need to reference it.  If you don't want to link in your Home Assistant device, just set this to an empty string.
+
 * `logbackups = <int>` (default `1`)  
 The number of days of logs to keep.
 
