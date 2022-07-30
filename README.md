@@ -87,6 +87,12 @@ The root topic sent to your MQTT broker.  The default is configured so that you 
 * `mqtt_discover = <boolean>` (default `True`)  
 This tells presence tracker whether or not to send the presence_tracker config to Home Assistant.  If you set this to `False`, Home Assistant will not automatically create entities.
 
+* `mqtt_qos = <int>` (default `0`)  
+By default the script uses quality of service level 0 to talk to the broker.  You can change that with this setting to `1` or `2`.
+
+* `mqtt_version = <str>` (default `v5`)  
+By default the script uses MQTT protocol version 5 to talk to the broker.  If you want to use an older version, you can use `v311` or `v31`.
+
 * `tracker_location = <str>` (default `empty string`)  
 The location of your tracker.  This is included in the name of the sensor to uniquely identify a device/tracker combination (in case you have more than one presence tracker in the house).
 
@@ -122,6 +128,9 @@ The model of the device (when using MQTT notifier).
 
 * `device_config_url = <str>` (default `https://github.com/pkscout/presence.tracker`)  
 The configuration URL for the device (when using MQTT notifier). This gives you a link in the device to the README for the script in case you need to reference it.  If you don't want to link in your Home Assistant device, just set this to an empty string.
+
+* `use_watchdog = <bool>` (default `False`)  
+If you want to use WATCHDOG to restart the script if it hangs, change this to `True`.
 
 * `logbackups = <int>` (default `1`)  
 The number of days of logs to keep.
@@ -168,8 +177,18 @@ To run from the terminal (for testing): `python3 /home/pi/presence.tracker/execu
 To exit: CNTL-C
 
 ### AS A SERVICE
+ 
+Running from the terminal is useful during initial testing, but once you know it's working the way you want, you should set it to autostart.  To do that you need to copy one of the two scripts to the systemd directory, change the permissions, and configure systemd.
 
-Running from the terminal is useful during initial testing, but once you know it's working the way you want, you should set it to autostart.  To do that you need to copy rpiwsl.service.txt to the systemd directory, change the permissions, and configure systemd. From a terminal window:
+To use with watchdog, from a terminal window:
+```
+sudo cp -R /home/pi/presence.tracker/presence.tracker.service.watchdog.txt /lib/systemd/system/presence.tracker.service
+sudo chmod 644 /lib/systemd/system/presence.tracker.service
+sudo systemctl daemon-reload
+sudo systemctl enable presence.tracker.service
+```
+
+To use without watchdog, from a terminal window:
 ```
 sudo cp -R /home/pi/presence.tracker/presence.tracker.service.txt /lib/systemd/system/presence.tracker.service
 sudo chmod 644 /lib/systemd/system/presence.tracker.service
