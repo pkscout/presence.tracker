@@ -25,6 +25,14 @@ class MqttNotifier:
         self.MQTTPATH = config.Get('mqtt_path')
         self.MQTTRETAIN = config.Get('mqtt_retain')
         self.MQTTDISCOVER = config.Get('mqtt_discover')
+        self.MQTTQOS = config.Get('mqtt_qos')
+        version = config.Get('mqtt_version')
+        if version == 'v5':
+            self.MQTTVERSION = mqtt.MQTTv5
+        elif version == 'v311':
+            self.MQTTVERSION = mqtt.MQTTv311
+        else:
+            self.MQTTVERSION = mqtt.MQTTv31
         self.LOCATION = config.Get('tracker_location')
         self.HOMESTATE = config.Get('home_state')
         self.AWAYSTATE = config.Get('away_state')
@@ -45,21 +53,14 @@ class MqttNotifier:
                 publish.single(mqtt_publish,
                                payload=payload,
                                retain=self.MQTTRETAIN,
+                               qos=self.MQTTQOS,
                                hostname=self.MQTTHOST,
                                auth=self.MQTTAUTH,
                                client_id=self.MQTTCLIENT,
                                port=self.MQTTPORT,
-                               protocol=mqtt.MQTTv311)
-            except ConnectionRefusedError:
-                conn_error = 'refused'
-            except ConnectionAbortedError:
-                conn_error = 'aborted'
-            except ConnectionResetError:
-                conn_error = 'reset'
-            except ConnectionError:
-                conn_error = 'error'
-            if conn_error:
-                loglines.append('MQTT connection %s' % conn_error)
+                               protocol=self.MQTTVERSION)
+            except (ConnectionRefusedError, ConnectionAbortedError, ConnectionResetError, ConnectionError, OSError) as e:
+                loglines.append('MQTT connection problem: ' + str(e))
         else:
             loglines.append(
                 'MQTT python libraries are not installed, no message sent')
