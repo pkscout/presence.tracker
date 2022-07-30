@@ -16,17 +16,17 @@ sudo apt install bluetooth libbluetooth-dev
 
 You will also need a bluetooth Python library.  The default tracker uses the older pybluez module.  This isn't well maintained any longer and won't work with Python 3.10 or later.
 ```
-pip3 install pybluez
+sudo pip3 install pybluez
 ```
 
 There is a Bluetooth LE tracker available as well.  To use that you need to install the Bleak python library.  Bleak is a more modern and supported Bluetooth library, so you should use this if at all possible.
 ```
-pip3 install bleak
+sudo pip3 install bleak
 ```
 
 If you are going to use an MQTT broker to communicate status, you will also need the following:
 ```
-pip3 install paho-mqtt
+sudo pip3 install paho-mqtt
 ```
 
 If you want to use the Watchdog service to restart the script if needed, you will also need the following:
