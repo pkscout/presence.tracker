@@ -1,3 +1,7 @@
+v.1.4.0
+- default to MQTT v5 protocol
+- added support for Watchdog service
+
 v.1.3.2
 - addded device info to MQTT config so that tracker entities show up within single device
 
