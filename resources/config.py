@@ -26,6 +26,7 @@ defaults = {'waittime': 5,
             'device_identifier': 'Wayia8kt8ZWe23xCDKBuw8nxP2cjuYkQoHogWYQy',
             'device_model': 'PT1000',
             'device_manufacturer': 'pkscout',
+            'use_watchdog': False,
             'logbackups': 1,
             'debug': False,
             'testmode': False}

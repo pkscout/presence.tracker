@@ -7,6 +7,12 @@ from resources.lib.trackers import BluetoothTracker, BluetoothLETracker
 from resources.lib.notifiers import MqttNotifier, HaRestNotifier
 from resources.lib.xlogger import Logger
 
+try:
+    import sdnotify
+    has_watchdog = True
+except ImportError:
+    has_watchdog = False
+
 
 class CheckPresence:
 
@@ -20,12 +26,20 @@ class CheckPresence:
         self.OCCUPIEDDEVICE = config.Get('occupied_device')
         self.OCCUPIED = config.Get('occupied')
         self.NOTOCCUPIED = config.Get('not_occupied')
+        if config.Get('use_watchdog') and has_watchdog:
+            self.WATCHDOG = sdnotify.SystemdNotifier()
+            self.LW.log(['setting up Watchdog'])
+            self.WATCHDOG.notify('READY=1')
+        else:
+            self.WATCHDOG = None
 
     def Start(self):
         self.LW.log(['starting up CheckPresence'], 'info')
         try:
             while self.KEEPRUNNING and self.TRACKER and self.NOTIFIER:
-                occupied_state = self.NOTOCCUPIED
+                if self.WATCHDOG:
+                    self.LW.log(['sending notice to Watchdog'])
+                    self.WATCHDOG.notify('WATCHDOG=1')
                 for device in config.Get('devices'):
                     device_state, loglines = self.TRACKER.GetDeviceStatus(
                         device)
