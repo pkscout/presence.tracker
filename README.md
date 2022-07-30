@@ -29,6 +29,11 @@ If you are going to use an MQTT broker to communicate status, you will also need
 pip3 install paho-mqtt
 ```
 
+If you want to use the Watchdog service to restart the script if needed, you will also need the following:
+```
+sudo pip3 install sdnotify
+```
+
 It is recommended you install this script in `/home/pi`.  The service file you'll install later assumes this, so if you install it somewhere else, you'll need to edit presence.tracker.service.
 
 
