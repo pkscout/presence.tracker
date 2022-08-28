@@ -36,7 +36,6 @@ class MqttNotifier:
         self.LOCATION = config.Get('tracker_location')
         self.HOMESTATE = config.Get('home_state')
         self.AWAYSTATE = config.Get('away_state')
-        self.CONFIGSENT = []
         self.WHICHTRACKER = config.Get('which_tracker')
         self.DEVICE = {'identifiers': [_cleanup(config.Get('device_identifier'))],
                        'name': config.Get('device_name'),
@@ -82,7 +81,7 @@ class MqttNotifier:
         else:
             entity_id = _cleanup(friendly_name)
         mqtt_publish = '%s/%s' % (self.MQTTPATH, entity_id)
-        if self.MQTTDISCOVER and not entity_id in self.CONFIGSENT:
+        if self.MQTTDISCOVER:
             mqtt_config = mqtt_publish + '/config'
             payload['name'] = friendly_name
             payload['unique_id'] = unique_id
@@ -95,7 +94,6 @@ class MqttNotifier:
                             (friendly_name, self.MQTTHOST))
             c_loglines = self._mqtt_send(mqtt_config, json.dumps(payload))
             loglines.extend(c_loglines)
-            self.CONFIGSENT.append(entity_id)
         loglines.append('sending %s as status for device %s to %s' %
                         (device_state, friendly_name, self.MQTTHOST))
         loglines.extend(self._mqtt_send(

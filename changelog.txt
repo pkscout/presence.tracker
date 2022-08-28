@@ -1,3 +1,6 @@
+v.1.4.1
+- send config with every state update
+
 v.1.4.0
 - default to MQTT v5 protocol
 - added support for Watchdog service
